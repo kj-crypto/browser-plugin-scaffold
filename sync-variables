@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -e
+
+target_file="scaffold.sh"
+
+plugin_name=$(jq -r '.name' plugin/package.json)
+if [ -z "$plugin_name" ] || [ "$plugin_name" = "null" ]; then
+    echo "Plugin name not found"
+    exit 1
+fi
+
+sed -i "0,/^PLUGIN_NAME=.*$/s//PLUGIN_NAME=\"$plugin_name\"/" "$target_file"
+echo "Plugin name synced to $target_file"

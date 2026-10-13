@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
+set -e
 
-PLUGIN_PATH=""
+PLUGIN_NAME="statics-detector-rolldown-plugin"
+PLUGIN_PATH=${PLUGIN_PATH:-"."}
 
 adds_on_name=""
 if [ -z "$1" ] || [ -z "${1//}" ]; then
