@@ -25,7 +25,7 @@ export class ExcludePattern {
     }
     let result = String.raw`'.*\(`;
     for (const pattern of patterns) {
-      const findItems = /\*?([a-zA-Z0-9_\-\/]*\.?[a-zA-Z0-9_\-\/]+)$/.exec(pattern)?.[1];
+      const findItems = /\*?([a-zA-Z0-9_\-/]*\.?[a-zA-Z0-9_\-/]+)$/.exec(pattern)?.[1];
       if (findItems) {
         result += findItems.replace('.', String.raw`\.`) + String.raw`\|`;
       } else {

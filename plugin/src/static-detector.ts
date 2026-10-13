@@ -15,8 +15,8 @@ export type StaticDetectorOptions = {
 };
 
 export function staticsDetector(options: StaticDetectorOptions): Plugin {
-  let isWatch = options.isWatch || false;
-  let outDir = options.outDir;
+  const isWatch = options.isWatch || false;
+  const outDir = options.outDir;
   const watchers = new Set<ChildProcess>();
   const logger = new Logger('[static-bundler]');
   const fullPath = path.join(import.meta.dirname!, 'copy_statics.sh');

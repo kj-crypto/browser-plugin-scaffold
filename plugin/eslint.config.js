@@ -6,7 +6,7 @@ export default [
   {
     ignores: ['dist/**', 'node_modules/**', 'tests/**'],
   },
-  
+
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -16,7 +16,7 @@ export default [
       parserOptions: {
         tsconfigRootDir: import.meta.dirname,
         projectService: {
-          allowDefaultProject: ['eslint.config.js'],
+          allowDefaultProject: ['eslint.config.js', 'vitest.config.ts'],
         },
       },
     },
