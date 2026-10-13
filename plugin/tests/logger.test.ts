@@ -44,7 +44,7 @@ describe('Logger functionality', () => {
 
     expect(logSpy).toHaveBeenCalledTimes(1);
     expect(stripAnsi(logSpy.mock.calls[0]?.[0])).toBe(
-      '[custom prefix] Multiline msg\n[custom prefix] middle line\n[custom prefix] footer\n',
+      '[custom prefix] Multiline msg\n[custom prefix] middle line\n[custom prefix] footer',
     );
   });
 

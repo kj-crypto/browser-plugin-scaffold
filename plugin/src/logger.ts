@@ -22,13 +22,13 @@ export class Logger implements ILogger {
     this.prefix = prefix;
   }
   private processMessage(msg: string, prefix: string, textColor: Color) {
-    msg = msg.trim();
-    if (msg.includes('\n'))
-      return msg
-        .split('\n')
-        .map((line) => `${prefix} ${textColor}${line}${Color.reset}`)
-        .join('\n');
-    return `${prefix} ${textColor}${msg}${Color.reset}`;
+    return msg
+      .split('\n')
+      .map((line) =>
+        line.trim() !== '' ? `${prefix} ${textColor}${line.trim()}${Color.reset}` : null,
+      )
+      .filter(Boolean)
+      .join('\n');
   }
 
   private logNonEmptyString(msg: string, prefix: string, textColor: Color) {
