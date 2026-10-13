@@ -10,10 +10,14 @@ export default [
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
+    files: ['**/*.ts', '**/*.mts', '**/*.cts', '**/*.tsx'],
     languageOptions: {
+      parser: tseslint.parser,
       parserOptions: {
-        projectService: true,
         tsconfigRootDir: import.meta.dirname,
+        projectService: {
+          allowDefaultProject: ['eslint.config.js'],
+        },
       },
     },
     rules: {
