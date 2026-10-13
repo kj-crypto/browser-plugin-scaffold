@@ -4,7 +4,7 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "moduleDetection": "force",
-    
+
     "lib": ["esnext"],
     "types": ["node"],
 
