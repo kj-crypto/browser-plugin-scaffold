@@ -1,6 +1,6 @@
-# rolldown-addson-plugin
+# browser-plugin-scaffold
 
-A development utility for the **Rolldown** bundler that provides a static file detection plugin and reusable shared configurations.
+A modern development scaffold for Firefox browser plugin development built with TypeScript and Rolldown.
 
 ### Note
-Stil under development
+Still under development.
