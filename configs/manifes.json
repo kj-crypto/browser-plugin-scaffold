@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+  "name": "Firefox adds-on",
+  "version": "1.0",
+  "description": "Scaffolded firefox adds-on",
+  "background": {
+    "page": "background/background.html"
+  },
+  "browser_action": {
+    "default_icon": "<path-to-icon>",
+    "default_title": "Firefox adds-on",
+    "default_popup": "menu/menu.html"
+  },
+  "icons": {
+    "48": "<path-to-icon>"
+  },
+  "permissions": []
+}
