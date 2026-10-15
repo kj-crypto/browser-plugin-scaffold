@@ -19,7 +19,7 @@ export function staticsDetector(options: StaticDetectorOptions): Plugin {
   const outDir = options.outDir;
   const watchers = new Set<ChildProcess>();
   const logger = new Logger('[static-bundler]');
-  const fullPath = path.join(import.meta.dirname!, 'copy_statics.sh');
+  const fullPath = path.join(import.meta.dirname!, './script/copy-statics');
   const excludeExtensions = new ExcludePattern(options.excludes || [], { logger });
   const buildCmd = `source ${fullPath} && set_exclude '"${excludeExtensions.getPattern()}"' && copy_statics`;
   const watchCmd = `source ${fullPath} && set_exclude '"${excludeExtensions.getPattern()}"' && watch_files`;
