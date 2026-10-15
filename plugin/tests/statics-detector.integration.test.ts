@@ -8,11 +8,19 @@ const mockInfo = vi.fn();
 const mockError = vi.fn();
 const bashScriptName = 'copy-statics';
 
-vi.mock('../src/logger.ts', () => {
+vi.mock('../src/logger.ts', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../src/logger.ts')>();
   return {
-    Logger: class {
-      info = mockInfo;
-      error = mockError;
+    ...actual,
+    Logger: class extends actual.Logger {
+      info(msg: string) {
+        mockInfo(msg);
+        return super.info(msg);
+      }
+      error(msg: string) {
+        mockError(msg);
+        return super.error(msg);
+      }
     },
   };
 });
