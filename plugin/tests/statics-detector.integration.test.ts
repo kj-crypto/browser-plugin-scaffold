@@ -68,15 +68,6 @@ describe('staticsDetector Integration Tests', () => {
   describe('Standard Build Pipeline Execution', { concurrent: false }, () => {
     let cachedLogs: string[][];
 
-    beforeAll(() => {
-      vi.clearAllMocks();
-      vi.spyOn(process, 'exit').mockImplementation((() => {}) as any);
-    });
-
-    afterAll(() => {
-      vi.restoreAllMocks();
-    });
-
     test('should successfully trigger the build start lifecycle and execute the shell script', async ({
       tempDirs,
     }) => {
@@ -140,7 +131,6 @@ describe('staticsDetector Integration Tests', () => {
     let cachedLogs: string[][];
     const checkUpdatingLog = (srcDir: string) => {
       const copyLog = cachedLogs[0]?.[0];
-      console.log('copyLog', copyLog);
       expect(copyLog.includes(`Updated ${path.join(srcDir, onflyMutatingFile.name)}`)).toBe(true);
     };
 
@@ -168,7 +158,6 @@ describe('staticsDetector Integration Tests', () => {
       tempDirs,
     }) => {
       const { srcDir } = tempDirs;
-      console.log('copyLog', cachedLogs);
 
       let logText = cachedLogs[0]?.[0] ?? '';
       expect(logText).toBe(`Started watcher for '${srcDir}'`);
