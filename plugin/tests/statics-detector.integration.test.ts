@@ -1,4 +1,12 @@
-import { describe, test as baseTest, expect, vi, beforeAll, afterAll } from 'vitest';
+import {
+  describe,
+  test as baseTest,
+  expect,
+  vi,
+  beforeAll,
+  afterAll,
+  onTestFinished,
+} from 'vitest';
 import { staticsDetector } from '../src/index.ts';
 import fs from 'fs';
 import path from 'path';
@@ -121,6 +129,103 @@ describe('staticsDetector Integration Tests', () => {
 
       const finalContent = fs.readFileSync(path.join(outDir, copiableFile.name), 'utf-8');
       expect(finalContent).toBe(copiableFile.content);
+    });
+  });
+
+  describe('Watch Pipeline Execution', { concurrent: false }, () => {
+    const onflyMutatingFile = {
+      name: 'mutating-file.log',
+      content: 'This is a file initial content',
+    };
+    let cachedLogs: string[][];
+    const checkUpdatingLog = (srcDir: string) => {
+      const copyLog = cachedLogs[0]?.[0];
+      console.log('copyLog', copyLog);
+      expect(copyLog.includes(`Updated ${path.join(srcDir, onflyMutatingFile.name)}`)).toBe(true);
+    };
+
+    test('should stream real stdout data from a spawned watcher script', async ({ tempDirs }) => {
+      const { srcDir, outDir } = tempDirs;
+      fs.writeFileSync(path.join(srcDir, copiableFile.name), copiableFile.content);
+      fs.writeFileSync(path.join(srcDir, ignoredFile.name), ignoredFile.content);
+      const plugin = staticsDetector({
+        outDir,
+        sources: [srcDir],
+        isWatch: true,
+      });
+
+      if (typeof plugin.buildStart === 'function') {
+        await plugin.buildStart.call(plugin as any, {} as any);
+      }
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      expect(mockError).not.toHaveBeenCalled();
+      expect(mockInfo).toHaveBeenCalled();
+      cachedLogs = mockInfo.mock.calls;
+    });
+
+    test('should log the process initialization details without producing errors', ({
+      tempDirs,
+    }) => {
+      const { srcDir } = tempDirs;
+      console.log('copyLog', cachedLogs);
+
+      let logText = cachedLogs[0]?.[0] ?? '';
+      expect(logText).toBe(`Started watcher for '${srcDir}'`);
+
+      logText = cachedLogs[1]?.[0] ?? '';
+      expect(/\[BASH\] Run with pattern '.*ts.*js.*'/.test(logText)).toBe(true);
+
+      logText = cachedLogs[2]?.[0] ?? '';
+      expect(logText.includes(`Updated ${path.join(srcDir, copiableFile.name)}`)).toBe(true);
+    });
+
+    test('should react to creating new files and re-execute the copy pipeline', async ({
+      tempDirs,
+    }) => {
+      const { srcDir } = tempDirs;
+      fs.writeFileSync(path.join(srcDir, onflyMutatingFile.name), onflyMutatingFile.content);
+      await new Promise((resolve) => setTimeout(resolve, 1010));
+
+      expect(mockError).not.toHaveBeenCalled();
+      expect(mockInfo).toHaveBeenCalled();
+      cachedLogs = mockInfo.mock.calls;
+    });
+
+    test('should log the file change detection details without producing errors', ({
+      tempDirs,
+    }) => {
+      const { srcDir } = tempDirs;
+      checkUpdatingLog(srcDir);
+    });
+
+    const appendingData: string = 'text appended to file';
+
+    test('should react to file content changes and re-execute the copy pipeline', async ({
+      tempDirs,
+    }) => {
+      const { srcDir } = tempDirs;
+      fs.writeFileSync(path.join(srcDir, onflyMutatingFile.name), appendingData, { flag: 'a' });
+      await new Promise((resolve) => setTimeout(resolve, 1010));
+
+      expect(mockError).not.toHaveBeenCalled();
+      expect(mockInfo).toHaveBeenCalled();
+      cachedLogs = mockInfo.mock.calls;
+    });
+
+    test('should log the file content changes detection details without producing errors', ({
+      tempDirs,
+    }) => {
+      const { srcDir } = tempDirs;
+      checkUpdatingLog(srcDir);
+    });
+
+    test('should preserve the file content structure after file changes', ({ tempDirs }) => {
+      const { outDir } = tempDirs;
+      let finalContent = fs.readFileSync(path.join(outDir, copiableFile.name), 'utf-8');
+      expect(finalContent).toBe(copiableFile.content);
+      finalContent = fs.readFileSync(path.join(outDir, onflyMutatingFile.name), 'utf-8');
+      expect(finalContent).toBe(onflyMutatingFile.content + appendingData);
     });
   });
 });
