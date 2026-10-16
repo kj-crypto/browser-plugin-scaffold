@@ -14,7 +14,6 @@ copy_statics() {
     find "$source_dir" -type f ! -regex $EXCLUDE | while read -r file; do
         dest="${file/#$source_dir/$target_dir}"
         mkdir -p $(dirname "$dest")
-
         cp "$file" "$dest"
         echo "Updated $file"
     done
@@ -32,9 +31,9 @@ watch_files() {
 
         find "$source_dir" -type f  -newermt "@$last_check_time" ! -regex $EXCLUDE | while read -r file; do
                 dest="${file/#$source_dir/$target_dir}"
-                # mkdir -p "$(dirname "$dest")"
-                # cp "$file" "$dests"
-                echo "Updated $file to $dest"
+                mkdir -p "$(dirname "$dest")"
+                cp "$file" "$dest"
+                echo "Updated $file"
         done
 
         last_check_time=$current_time

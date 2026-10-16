@@ -5,7 +5,6 @@ import { Logger } from './logger.ts';
 import { ExcludePattern } from './exclude.ts';
 
 const SLEEP_TIME = 1;
-type Signal = 'SIGINT' | 'SIGTERM' | 'SIGKILL' | 'exit';
 
 export type StaticDetectorOptions = {
   outDir: string;
@@ -25,11 +24,17 @@ export function staticsDetector(options: StaticDetectorOptions): Plugin {
   const watchCmd = `source ${fullPath} && set_exclude '"${excludeExtensions.getPattern()}"' && watch_files`;
   const sources = options.sources?.length ? options.sources : ['public'];
 
-  ['SIGINT', 'SIGTERM', 'exit'].forEach((signal) => {
-    process.on(signal, () => {
+  ['SIGINT', 'SIGTERM'].forEach((signal) => {
+    const handleSignal = () => {
       if (isWatch) killWatchers('SIGTERM');
-      process.exit(0);
-    });
+      process.off(signal, handleSignal);
+      process.kill(process.pid, signal);
+    };
+    process.prependListener(signal, handleSignal);
+  });
+
+  process.prependListener('exit', () => {
+    if (isWatch) killWatchers('SIGKILL');
   });
 
   const spawnWatcher = (source: string) => {
@@ -54,13 +59,13 @@ export function staticsDetector(options: StaticDetectorOptions): Plugin {
     });
   };
 
-  const killWatchers = (signal: Signal) => {
+  const killWatchers = (signal: 'SIGTERM' | 'SIGKILL') => {
     if (watchers.size > 0) {
       for (const child of watchers) {
         if (child.pid) {
           try {
             process.kill(-child.pid, signal);
-            logger.info(`Shutdown process ${child.pid}`);
+            logger.info(`Shutdown process ${child.pid} with signal ${signal}`);
           } catch (e) {
             logger.error(`Failed to kill process: ${e}`);
           }
