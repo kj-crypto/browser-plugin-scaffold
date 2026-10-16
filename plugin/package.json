@@ -4,6 +4,9 @@
   "description": "Rolldown plugin for detecting and updating static files",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
