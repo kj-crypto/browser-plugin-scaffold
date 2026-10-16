@@ -1,12 +1,4 @@
-import {
-  describe,
-  test as baseTest,
-  expect,
-  vi,
-  beforeAll,
-  afterAll,
-  onTestFinished,
-} from 'vitest';
+import { describe, test as baseTest, expect, vi } from 'vitest';
 import { staticsDetector } from '../src/index.ts';
 import fs from 'fs';
 import path from 'path';
