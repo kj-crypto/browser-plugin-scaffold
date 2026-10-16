@@ -109,7 +109,12 @@ export function inlineCssPlugin(): RolldownPlugin {
       async handler(id: string): Promise<string> {
         const actualId = id.replace(/\?inline$/, '');
         const data = await this.fs.readFile(actualId);
-        const inlineCss = data.toString().replace(/\n/g, '').replace(/\s+/g, ' ').trim();
+        const inlineCss = data
+          .toString()
+          .replace(/\n/g, '')
+          .replace(/;\}/g, '; }')
+          .replace(/\s+/g, ' ')
+          .trim();
         return `export default ${JSON.stringify(inlineCss)};`;
       },
     },
