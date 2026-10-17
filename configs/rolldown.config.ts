@@ -14,14 +14,14 @@ export default defineConfig((_): RolldownOptions[] => {
         staticsDetector({
           outDir: 'dist',
           sources: ['public', 'src'],
-          excludes: ['*.ts', '*.js', 'script/styles.css'],
+          excludes: ['*.ts', '*.js', '*.swp'],
           isWatch,
         }),
       ],
       input: 'src/background/background.ts',
       output: {
         file: 'dist/background.js',
-        format: 'esm',
+        format: 'iife',
         ...outputOptions,
       } as OutputOptions,
     },
@@ -44,4 +44,3 @@ export default defineConfig((_): RolldownOptions[] => {
     },
   ];
 });
-

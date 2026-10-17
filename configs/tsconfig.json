@@ -8,9 +8,6 @@
     "lib": ["esnext"],
     "types": ["node"],
 
-    "rootDir": "./src",
-    "outDir": "./dist",
-
     "allowImportingTsExtensions": true,
     "rewriteRelativeImportExtensions": true,
 
@@ -29,6 +26,6 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "tests/**/*", "../configs/**/*"]
+  "include": ["src/**/*", "public/**/*"],
+  "exclude": ["node_modules"]
 }

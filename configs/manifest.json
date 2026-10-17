@@ -4,7 +4,7 @@
   "version": "1.0",
   "description": "Scaffolded firefox adds-on",
   "background": {
-    "page": "background/background.html"
+    "scripts": ["background.js"]
   },
   "browser_action": {
     "default_icon": "<path-to-icon>",
@@ -14,5 +14,12 @@
   "icons": {
     "48": "<path-to-icon>"
   },
-  "permissions": []
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["injection-script.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "permissions": ["activeTab"]
 }
